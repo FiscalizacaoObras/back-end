@@ -17,6 +17,28 @@ exports.listarTemplates = async (req, res) => {
     }
 };
 
+exports.obterTemplatePorId = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const template = await prisma.template.findUnique({
+      where: { id: Number(id) },
+      include: {
+        fields: true
+      }
+    });
+
+    if (!template) {
+      return res.status(404).json({ error: "Template não encontrado" });
+    }
+
+    res.json(template);
+  } catch (e) {
+    console.error("Erro ao buscar template:", e);
+    res.status(500).json({ error: "Erro interno do servidor" });
+  }
+};
+
 exports.criarTemplate = async (req, res) => {
     try {
         const { name, description, fields } = req.body;
