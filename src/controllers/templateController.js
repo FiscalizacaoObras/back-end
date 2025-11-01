@@ -42,10 +42,12 @@ exports.obterTemplatePorId = async (req, res) => {
 exports.criarTemplate = async (req, res) => {
     try {
         const { name, description, fields } = req.body;
+        const file = req.file;
 
         const novoTemplate = await prisma.template.create({
             data: {
                 name,
+                imagePath: file.filename,
                 description,
                 fields: {
                     create: fields.map(i => ({

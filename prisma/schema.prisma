@@ -17,6 +17,7 @@ datasource db {
 model Template {
   id Int @id @default(autoincrement())
   name String
+  imagePath String
   description String
   date DateTime @default(now())
   fields Field[] 
