@@ -7,7 +7,7 @@ exports.listarTemplates = async (req, res) => {
     try {
         const templates = await prisma.template.findMany({
             include: {
-                fields: true 
+                fields: true
             }
         });
         res.json(templates);
@@ -18,25 +18,25 @@ exports.listarTemplates = async (req, res) => {
 };
 
 exports.obterTemplatePorId = async (req, res) => {
-  try {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    const template = await prisma.template.findUnique({
-      where: { id: Number(id) },
-      include: {
-        fields: true
-      }
-    });
+        const template = await prisma.template.findUnique({
+            where: { id: Number(id) },
+            include: {
+                fields: true
+            }
+        });
 
-    if (!template) {
-      return res.status(404).json({ error: "Template não encontrado" });
+        if (!template) {
+            return res.status(404).json({ error: "Template não encontrado" });
+        }
+
+        res.json(template);
+    } catch (e) {
+        console.error("Erro ao buscar template:", e);
+        res.status(500).json({ error: "Erro interno do servidor" });
     }
-
-    res.json(template);
-  } catch (e) {
-    console.error("Erro ao buscar template:", e);
-    res.status(500).json({ error: "Erro interno do servidor" });
-  }
 };
 
 exports.criarTemplate = async (req, res) => {
@@ -55,7 +55,7 @@ exports.criarTemplate = async (req, res) => {
                         width: Number(i.width),
                         height: Number(i.height)
                     }))
-                } 
+                }
             }
         });
 
@@ -69,13 +69,15 @@ exports.criarTemplate = async (req, res) => {
 exports.excluirTemplate = async (req, res) => {
     try {
         const { id } = req.params;
-        const templateExcluido = await prisma.template.findByIdAndDelete(id);
+        const templateId = Number(id);
 
-        if (!templateExcluido) {
-            return res.status(404).json({ e: "Template não foi encontrado" });
-        }
+        const templateExcluido = await prisma.template.delete({
+            where: { id: templateId },
 
-        res.json({ mensagem: "Template removido com sucesso" });
+        });
+
+        return res.json({ mensagem: "Template removido com sucesso", template: templateExcluido });
+
     } catch (e) {
         res.status(500).json({ e: "Não foi possível excluir o template" });
     }
