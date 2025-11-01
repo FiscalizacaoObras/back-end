@@ -69,16 +69,18 @@ exports.criarTemplate = async (req, res) => {
 exports.excluirTemplate = async (req, res) => {
     try {
         const { id } = req.params;
-        const templateId = Number(id);
+        const templateExcluido = await prisma.template.findByIdAndDelete(id);
 
-        const templateExcluido = await prisma.template.delete({
-            where: { id: templateId },
+        if (!templateExcluido) {
+            return res.status(404).json({ e: "Template não foi encontrado" });
+        }
 
-        });
-
-        return res.json({ mensagem: "Template removido com sucesso", template: templateExcluido });
-
+        res.json({ mensagem: "Template removido com sucesso" });
     } catch (e) {
+        console.error("Erro ao excluir template:", e, e.meta);
+        if (e.code === 'P2025') {
+            return res.status(404).json({ e: "Template não foi encontrado" });
+        }
         res.status(500).json({ e: "Não foi possível excluir o template" });
     }
 };
