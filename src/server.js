@@ -5,7 +5,7 @@ require("dotenv").config();
 
 const app = express();
 app.use(cors({
-    origin: ['https://front-end-one-nu-88.vercel.app', 'http://localhost:3000'],
+    origin: ['https://front-end-one-nu-88.vercel.app'],
     credentials: true
 }));
 app.use(express.json());
